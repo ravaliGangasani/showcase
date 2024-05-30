@@ -1,0 +1,32 @@
+type Contract @entity {
+  id: ID!
+  deploymentHeight: Int! @index
+  deploymentTxn: String! @index
+  address: String! @index
+  isAErc721Duck: Boolean!
+	transfers: [Transfer!] @derivedFrom(field: "contract")
+}
+
+type Transfer @entity {
+  id: ID!
+  contract: Contract!
+  from: String! @index
+  to: String! @index
+  tokenId: BigInt! @index
+  tokenStandard: String! @index
+}
+
+type Approve @entity{
+  id: ID!
+  contract: Contract!
+  owner: String! @index
+  approved: String!
+  tokenId: BigInt! @index
+  tokenStandard: String! @index
+}
+
+type Upgrade @entity{
+  id: ID!
+  contract: Contract!
+  implementationContract: String! @index
+}
