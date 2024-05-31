@@ -32,6 +32,13 @@ export const processor = new EvmBatchProcessor()
       createResultCode: true, // for checking ERC721 compliance
       createResultAddress: true,
     },
+    log: {
+      topics: true,
+      data: true,
+  },
+  transaction: {
+      hash: true,
+  },
   });
 
 export type Fields = EvmBatchProcessorFields<typeof processor>;

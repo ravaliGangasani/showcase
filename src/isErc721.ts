@@ -22,3 +22,32 @@ export function isErc721(bytecode: string): boolean {
   }
   return true;
 }
+
+export function isProxyContract(bytecode: string): boolean {
+  // Check for delegatecall opcode
+  const delegatecallOpcode = 'f4';
+
+  // Check for storage slot used by EIP-1967
+  const eip1967Slot = '0x360894a13ba1a3210667c828492db98dca3e2076cc3735a920a3ca505d382bbc';
+
+  // Convert bytecode to lowercase to avoid case sensitivity issues
+  const lowerCaseBytecode = bytecode.toLowerCase();
+
+  // Check for delegatecall opcode
+  if (lowerCaseBytecode.includes(delegatecallOpcode)) {
+    return true;
+  }
+
+  // Check for EIP-1967 storage slot
+  if (lowerCaseBytecode.includes(eip1967Slot)) {
+    return true;
+  }
+
+  // Check for Minimal Proxy (EIP-1167) pattern
+  const minimalProxyPattern = '363d3d373d3d3d363d73';
+  if (lowerCaseBytecode.startsWith(minimalProxyPattern)) {
+    return true;
+  }
+
+  return false;
+}
