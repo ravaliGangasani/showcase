@@ -22,7 +22,7 @@ export const processor = new EvmBatchProcessor()
 
   })
   .addLog({
-    address: [ "0x9Dd4a2A1dB6bc1168de7D758208AbB109d9A386A"],
+    address: [ "0x9Dd4a2A1dB6bc1168de7D758208AbB109d9A386A", "0x6D09C6c741B6B9c1e009616359b914706D7bf9B7"],
     topic0: [erc721.events.Transfer.topic, proxy.events.Upgraded.topic],
     transaction: true,
     transactionLogs:true
@@ -35,10 +35,8 @@ export const processor = new EvmBatchProcessor()
     log: {
       topics: true,
       data: true,
-  },
-  transaction: {
-      hash: true,
-  },
+      transactionHash: true
+    },
   });
 
 export type Fields = EvmBatchProcessorFields<typeof processor>;

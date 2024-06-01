@@ -1,7 +1,7 @@
 import {TypeormDatabase} from '@subsquid/typeorm-store'
 import {Contract, Transfer, Approve, Upgrade} from './model'
 import {processor} from './processor'
-import {isErc721, isProxyContract} from './isErc721'
+import {isErc1155, isErc721, isProxyContract} from './isErc721'
 import * as erc721 from './abi/erc721'
 import * as proxy from './abi/0x9Dd4a2A1dB6bc1168de7D758208AbB109d9A386A'
 import { json } from 'stream/consumers'
@@ -36,6 +36,22 @@ processor.run(new TypeormDatabase({supportHotBlocks: false}), async (ctx) => {
                     isAErc721Duck: true
                 }))
             } else if (trc.type == 'create' && trc.result?.code && isProxyContract(trc.result.code)){
+                if (!trc.transaction) {
+                    ctx.log.fatal(`ERROR: trace came without a parent transaction`)
+                    console.log(trc)
+                    process.exit(1)
+                }
+                let address = trc.result.address
+               // ctx.log.info(`Detected an NFT proxy contract deployment at ${address}`)
+              //  console.log(JSON.stringify(trc.transaction))
+                newNftContracts.set(address, new Contract({
+                    id: address,
+                    deploymentHeight: block.header.height,
+                    deploymentTxn: trc.transaction.hash,
+                    address,
+                    isAErc721Duck: true
+                }))
+            } else if (trc.type == 'create' && trc.result?.code && isErc1155(trc.result.code)){
                 if (!trc.transaction) {
                     ctx.log.fatal(`ERROR: trace came without a parent transaction`)
                     console.log(trc)

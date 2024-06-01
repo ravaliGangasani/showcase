@@ -1,5 +1,6 @@
 import * as ethers from "ethers";
 import * as erc721 from "./abi/erc721";
+import * as erc1155 from "./abi/erc1155";
 
 /**
  * A rather crude test for whether a deployed contract implements ERC721. Limitations:
@@ -50,4 +51,16 @@ export function isProxyContract(bytecode: string): boolean {
   }
 
   return false;
+}
+
+export function isErc1155(bytecode: string): boolean {
+  for (let fname in erc1155.functions) {
+    let fsighash = erc1155.functions[
+      fname as keyof typeof erc1155.functions
+    ].selector.slice(2, 10);
+    if (!bytecode.includes(fsighash)) {
+      return false;
+    }
+  }
+  return true;
 }
